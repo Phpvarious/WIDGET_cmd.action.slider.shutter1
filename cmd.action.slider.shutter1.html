@@ -2,9 +2,10 @@
   <!-- ################ Slider shutter ################ 
   Widget name : cmd.action.slider.shutter1
   Author : Phpvarious
-  Version : 2026/03/05 7h00
+  Version : 2026/03/06 18h30
   Doc : https://phpvarious.github.io/documentation/widget/fr_FR/action/slider/cmd.action.slider.shutter1/
 -->
+  
   <div class="title #hide_name#">
     <div class="cmdName">#name_display#</div>
   </div>
@@ -14,32 +15,37 @@
   </div>
 
   <template>
-    <div>-------------- Config of slider -----------</div>
-    <div>widthShutter : Largeur du slider. [ défaut : 90 ]</div>
-    <div>heightShutter : Hauteur du slider. [ défaut : 90 ]</div>
-    <div>blades : Couleur des lamelles : [ défaut : light | dark | wood ]</div>
-    <div>handle : Couleur de la poignée : [ défaut : light | dark | wood ]</div>
-    <div>offset : Offset pour considérer le volet comme ajouré. [ défaut : 0 ]</div>
-    <div>-------------- globale -----------</div>
     <div>step : Pas utilisé pour le changement de valeur. [ défaut : 1 ]</div>
+    <div>widthShutter : Largeur du slider. [ défaut : 60 ]</div>
+    <div>heightShutter : Hauteur du slider. [ défaut : 80 ]</div>
+    <div>ouvrant : Type d'ouvrant : [ défaut : bay_white | bay_white2 | bay_black | bay_black2 | bay_wood | bay_wood2 | window | window2 | window3 | window4 | velux | garage | garage1 | garage2 | garage3]</div>
+    <div>blades :Type de lamelle : [ défaut : light | dark | wood ]</div>
+    <div>handle : Type de poignée : [ défaut : light | dark | wood ]</div>
+    <div>offset : Offset pour considérer le volet comme ajouré. [ défaut : 0 ]</div>
     <div>direction : Par défaut, Fermé = 100% . Pour inverser mettre ce paramètre a 1.</div>
 <div>hideValue : Masque la valeur sous le widget. [ défaut : 0 (affiché) ]</div>
+    <div> </div>
+    <div>-------------- Ajout d'une image personnalisée -----------</div>
+    <div>- L'images doit être de type png.</div>
+    <div>- Elle doit être importée dans le dossier du widget (cmd.action.slider.shutter1).</div>
+    <div>/!\ Utilisez les paramètres ci-dessous, seulement si vous constatez un décalage des volets sur le widget.</div>
+    <div>paramTop : Permet un décalage du volet en partie haute.</div>
+    <div>paramBottom : Permet un décalage du volet en partie basse.</div>
+    <div>paramOffset : Permet de retailler et recentrer le volet.</div>
+    <div>paramRadius : Taille d'arrondi bas du selecteur.</div>
   </template>
+
   <script>
+    
     /* ------------ General -------------- */
     var maxValue_#uid# = parseFloat('#maxValue#')
     var minValue_#uid# = parseFloat('#minValue#')
     var slider_#uid# = document.getElementById('slider-#uid#')
     var direction_#uid# = ('#direction#' == '1') ? true : false
-    
-    /* ------------ Shutter -------------- */
     var colorBlades_#uid# = ('#blades#' !='#'+'blades#') ? '#blades#' : 'light'
     var colorHandle_#uid# = ('#handle#' !='#'+'handle#') ? '#handle#' : 'light'
     var offset_#uid# = ('#offset#' !='#'+'offset#' && '#offset#' != '' && '#offset#' > 1) ? parseFloat('#offset#') : false
     var image_#uid# = ('#image#' !='#'+'image#') ? '#image#' : 'bay_white';
-    var images_#uid# = ["bay_white","bay_white2","bay_black","bay_black2","bay_wood","bay_wood2","window","window1","window2","window3","window4","velux","garage","garage1","garage2","garage3"];
-    var hauteurLames_#uid# = (image_#uid#.search("garage") == -1) ? '9px' : '15px';
-    
     
     /* ----------- createOptions ----------- */
     var createOptions_#uid# = {
@@ -65,16 +71,37 @@
     }
     
     /* ------------ General -------------- */
-    document.documentElement.style.setProperty('--shutter-lames-height-#uid#', hauteurLames_#uid#)
     if (is_numeric('#widthShutter#')) document.documentElement.style.setProperty('--shutter-width-#uid#', parseFloat('#widthShutter#') + 'px')
     if (is_numeric('#heightShutter#')) document.documentElement.style.setProperty('--shutter-height-#uid#', parseFloat('#heightShutter#') + 'px')
-    document.documentElement.style.setProperty('--shutter-handle-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/selecteur_' + colorHandle_#uid# + '.png)')
-    if (images_#uid#.includes(image_#uid#)) {
-      document.documentElement.style.setProperty('--shutter-image-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/' + image_#uid# + '.png)')
+    document.documentElement.style.setProperty('--shutter-handle-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/selecteur_' + colorHandle_#uid# + '.png)')
+    document.documentElement.style.setProperty('--shutter-image-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/' + image_#uid# + '.png)')
+    
+    if (image_#uid# == "velux") {
+      document.documentElement.style.setProperty('--padding-top-#uid#', '15px') //parseFloat('#widthShutter#')
+      document.documentElement.style.setProperty('--padding-bottom-#uid#', '12px')
+      document.documentElement.style.setProperty('--handle-radius-#uid#', '1px')
+    } else if (image_#uid# == "window"|| image_#uid# == "window2" || image_#uid# == "window3") {
+      document.documentElement.style.setProperty('--padding-top-#uid#', '3px')
+      document.documentElement.style.setProperty('--padding-bottom-#uid#', '11px')
+      document.documentElement.style.setProperty('--handle-radius-#uid#', '3px')
+    } else if (image_#uid# == "window4") {
+      document.documentElement.style.setProperty('--padding-top-#uid#', '6px')
+      document.documentElement.style.setProperty('--padding-bottom-#uid#', '12px')
+      document.documentElement.style.setProperty('--handle-radius-#uid#', '3px')
+    } else if (image_#uid# == "garage") {
+      //document.documentElement.style.setProperty('--shutter-lames-height-#uid#', '14px')
+    } else if (image_#uid# == "bay_white2") {
+      document.documentElement.style.setProperty('--padding-horizontal-#uid#', '4px')
+      document.documentElement.style.setProperty('--padding-top-#uid#', '8px')
+    } else if (image_#uid# == "bay_black" || image_#uid# == "bay_black2" || image_#uid# == "bay_white" || image_#uid# == "bay_wood" || image_#uid# == "bay_wood2") {
+      document.documentElement.style.setProperty('--padding-bottom-#uid#', '12px')
     }
-    if (image_#uid#.search("window") == 0) document.getElementById('slider-#uid#').style.padding = '0px 0px 9px 0px'
-    else if (image_#uid#.search("velux") == 0) document.getElementById('slider-#uid#').style.padding = '15px 0px 9px 0px'
-
+    /* param specific */
+    if (is_numeric('#paramTop#')) document.documentElement.style.setProperty('--padding-top-#uid#', parseFloat('#paramTop#') + 'px')
+    if (is_numeric('#paramBottom#')) document.documentElement.style.setProperty('--padding-bottom-#uid#', parseFloat('#paramBottom#') + 'px')
+    if (is_numeric('#paramOffset#')) document.documentElement.style.setProperty('--padding-horizontal-#uid#', parseFloat('#paramOffset#') + 'px')
+    if (is_numeric('#paramRadius#')) document.documentElement.style.setProperty('--handle-radius-#uid#', parseFloat('#paramRadius#') + 'px')
+    
     /* ----------- direction ----------- */
     if (direction_#uid# == true) createOptions_#uid#.direction = 'rtl'
     
@@ -82,68 +109,64 @@
     noUiSlider.create(slider_#uid#, createOptions_#uid#);
     
     /* events noUiSlider */
-    
     slider_#uid#.noUiSlider.on('end', function(values, handle) {
       jeedom.cmd.execute({ id: '#id#', value: { slider: values[handle].replace('#unite#', '').trim() } })
     })
     
-    
     slider_#uid#.noUiSlider.on('update', function(values, handle) {
       let value = values[0].replace('#unite#','').replace(' ','')
       let container = document.getElementById('container-#uid#')
-        let position = value;
-        document.documentElement.style.setProperty('--shutter-backgroundHeight-#uid#', ((direction_#uid# == true) ? parseInt(maxValue_#uid#) - value + '%' : value + '%'))
-        if (direction_#uid# == true) {
-          if (offset_#uid# != false) {
-            if (value < 1) {
-              container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lamepleine_' + colorBlades_#uid# + '.png)')
-            } else {
-              if (value >= 1  && value <= offset_#uid#) {
-                container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
-              } else if (value >= maxValue_#uid#) {
-                container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-              } else {
-                container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-              }
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lame_' + colorBlades_#uid# + '.png)')
-            }
+      let position = value;
+      document.documentElement.style.setProperty('--shutter-backgroundHeight-#uid#', ((direction_#uid# == true) ? parseInt(maxValue_#uid#) - value + '%' : value + '%'))
+      if (direction_#uid# == true) {
+        if (offset_#uid# != false) {
+          if (value < 1) {
+            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
           } else {
-            if (value < 1) {
-              container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lamepleine_' + colorBlades_#uid# + '.png)')
+            if (value >= 1  && value <= offset_#uid#) {
+              container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
+            } else if (value >= maxValue_#uid#) {
+              container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
             } else {
-              if (value >= maxValue_#uid#) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-              else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lame_' + colorBlades_#uid# + '.png)')
+              container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
             }
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
           }
         } else {
-          if (offset_#uid# != false) {
-            if (value >= maxValue_#uid#) {
-              container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lamepleine_' + colorBlades_#uid# + '.png)')
-            } else {
-              if (value < maxValue_#uid#  && value >= (maxValue_#uid# - offset_#uid#)) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
-              else if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-              else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lame_' + colorBlades_#uid# + '.png)')
-            }
+          if (value < 1) {
+            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
           } else {
-            if (value >= maxValue_#uid#) {
-             container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lamepleine_' + colorBlades_#uid# + '.png)')
-            } else {
-              if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-              else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lame_' + colorBlades_#uid# + '.png)')
-            }
+            if (value >= maxValue_#uid#) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
           }
         }
-
+      } else {
+        if (offset_#uid# != false) {
+          if (value >= maxValue_#uid#) {
+            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+          } else {
+            if (value < maxValue_#uid#  && value >= (maxValue_#uid# - offset_#uid#)) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
+            else if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+          }
+        } else {
+          if (value >= maxValue_#uid#) {
+            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+          } else {
+            if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+          }
+        }
+      }
     })
     
-    /* events button */  
     jeedom.cmd.addUpdateFunction('#id#', function(_options) {
       if (is_object(cmd = document.querySelector('.cmd[data-cmd_uid="#uid#"]'))) {
         if (_options.value != undefined && slider_#uid#.noUiSlider) {
@@ -152,7 +175,7 @@
       }
     })
     
-    jeedom.cmd.refreshValue([{cmd_id:'#id#', value: '#state#', display_value: '#state#', valueDate: '#valueDate#', collectDate: '#collectDate#', alertLevel: '#alertLevel#', unit: '#unite#', trigger :'init'}])
+    jeedom.cmd.refreshValue([{cmd_id:'#id#', value: '#state#', valueDate: '#valueDate#', collectDate: '#collectDate#', alertLevel: '#alertLevel#', unit: '#unite#'}])
   </script>
   
   <style>
@@ -160,14 +183,17 @@
       --shutter-height-#uid#: 80px;
       --shutter-width-#uid#: 60px;
       --shutter-lames-height-#uid#: 9px;
-      --shutter-image-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/bay_white.png);
-      --shutter-handle-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/selecteur_light.png);
-      --shutter-lames-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.ShutterSlider/lame_light.png);
+      --shutter-image-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.slider1/bay_white.png);
+      --shutter-handle-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.slider1/selecteur_light.png);
+      --shutter-lames-#uid#: url(data/customTemplates/dashboard/cmd.action.slider.slider1/lame_light.png);
       --shutter-backgroundHeight-#uid# : 100%;
+      --padding-top-#uid# : 10px;
+      --padding-bottom-#uid# : 9px;
+      --padding-horizontal-#uid# : 8px;
+      --handle-radius-#uid# : 4px;
     }
     
     /* ------------ Styles --------------- */
-
     .cmd.cmd-widget[data-cmd_uid=#uid#] {
       user-select: none;
     }
@@ -183,20 +209,20 @@
       border-radius: 3px 3px 0px 0px;
     }
     #slider-#uid# .noUi-handle {
-      width: calc(var(--shutter-width-#uid#) - 8px);
+      width: calc(var(--shutter-width-#uid#) - var(--padding-horizontal-#uid#));
       height: 9px;
       background: var(--shutter-handle-#uid#) center !important;
-      border-radius: 0 0 4px 4px !important;
+      border-radius: 0 0 var(--handle-radius-#uid#) var(--handle-radius-#uid#) !important;
       left: unset !important;
       bottom: -9px;
-      right: 4px;
+      right: calc(var(--padding-horizontal-#uid#) / 2);
     }
     #slider-#uid#.noUi-target {
       border: 0;
     }
     #slider-#uid# .noUi-connect {
-      width: calc(var(--shutter-width-#uid#) - 8px);
-      left: 4px;
+      width: calc(var(--shutter-width-#uid#) - var(--padding-horizontal-#uid#));
+      left: calc(var(--padding-horizontal-#uid#) / 2);
       /* top: 11px; */
       height: var(--shutter-backgroundHeight-#uid#);
       transform: unset !important;
@@ -211,7 +237,7 @@
       display: none;
     }
     #slider-#uid# {
-      padding: 10px 0px 9px 0px;
+      padding: var(--padding-top-#uid#) 0px var(--padding-bottom-#uid#) 0px;
     }
     #slider-#uid#.noUi-target,
     #slider-#uid# .noUi-handle {
