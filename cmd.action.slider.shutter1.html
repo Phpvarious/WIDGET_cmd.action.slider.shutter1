@@ -1,38 +1,32 @@
 <div class="cmd cmd-widget" data-type="action" data-subtype="slider" data-template="button" data-cmd_id="#id#" data-cmd_uid="#uid#" data-version="#version#" data-eqLogic_id="#eqLogic_id#">
-  <!-- ################ Slider shutter ################ 
+  <!-- ################ Shutter 1 ################ 
   Widget name : cmd.action.slider.shutter1
   Author : Phpvarious
-  Version : 2026/03/06 18h30
+  Version : 2026/03/08 16h30
   Doc : https://phpvarious.github.io/documentation/widget/fr_FR/action/slider/cmd.action.slider.shutter1/
+  Original : https://community.jeedom.com/t/salvialf-widget-shutterslider-action-curseur/22380
 -->
   
   <div class="title #hide_name#">
     <div class="cmdName">#name_display#</div>
   </div>
-  <div class="content container-#uid#" id="container-#uid#" data-template="shutter">
-    <div id="slider-#uid#"></div>
+  <div class="content">
+    <div id="shutterSlider-#uid#"></div>
     <div class="sliderValue-#uid#"></div>
   </div>
+  <div class="timeCmd label label-default #value_history#" data-type="info" data-cmd_id="#value_id#"></div>
 
   <template>
     <div>step : Pas utilisé pour le changement de valeur. [ défaut : 1 ]</div>
-    <div>widthShutter : Largeur du slider. [ défaut : 60 ]</div>
-    <div>heightShutter : Hauteur du slider. [ défaut : 80 ]</div>
+    <div>width : Largeur du slider. [ défaut : 60 ]</div>
+    <div>height : Hauteur du slider. [ défaut : 80 ]</div>
     <div>image : Type d'ouvrant : [ défaut : bay_white | bay_white2 | bay_black | bay_black2 | bay_wood | bay_wood2 | window | window2 | window3 | window4 | velux | garage | garage1 | garage2 | garage3]</div>
-    <div>blades :Type de lamelle : [ défaut : light | dark | wood ]</div>
-    <div>handle : Type de poignée : [ défaut : light | dark | wood ]</div>
+    <div>rails : couleur des lames : [ défaut : light | dark | wood ]</div>
+    <div>handle : Type de selecteur : [ défaut : light | dark | wood ]</div>
     <div>offset : Offset pour considérer le volet comme ajouré. [ défaut : 0 ]</div>
-    <div>direction : Par défaut, Fermé = 100% . Pour inverser mettre ce paramètre a 1.</div>
-<div>hideValue : Masque la valeur sous le widget. [ défaut : 0 (affiché) ]</div>
-    <div> </div>
-    <div>-------------- Ajout d'une image personnalisée -----------</div>
-    <div>- L'images doit être de type png.</div>
-    <div>- Elle doit être importée dans le dossier du widget (cmd.action.slider.shutter1).</div>
-    <div>/!\ Utilisez les paramètres ci-dessous, seulement si vous constatez un décalage des volets sur le widget.</div>
-    <div>paramTop : Permet un décalage du volet en partie haute.</div>
-    <div>paramBottom : Permet un décalage du volet en partie basse.</div>
-    <div>paramOffset : Permet de retailler et recentrer le volet.</div>
-    <div>paramRadius : Taille d'arrondi bas du selecteur.</div>
+    <div>invert : inverser la position du volet pour que 0% = Ouvert et 100% = Fermé.</div>
+    <div>position  : Masque la valeur sous le widget. [ défaut : 0 = affichée) | 1 = masquée]</div>
+    <div>time : duration|date (Affiche durée ou date de la valeur)</div>
   </template>
 
   <script>
@@ -40,9 +34,9 @@
     /* ------------ General -------------- */
     var maxValue_#uid# = parseFloat('#maxValue#')
     var minValue_#uid# = parseFloat('#minValue#')
-    var slider_#uid# = document.getElementById('slider-#uid#')
-    var direction_#uid# = ('#direction#' == '1') ? true : false
-    var colorBlades_#uid# = ('#blades#' !='#'+'blades#') ? '#blades#' : 'light'
+    var slider_#uid# = document.getElementById('shutterSlider-#uid#')
+    var invert_#uid# = ('#invert#' == '1') ? true : false
+    var colorBlades_#uid# = ('#rails#' !='#'+'rails#') ? '#rails#' : 'light'
     var colorHandle_#uid# = ('#handle#' !='#'+'handle#') ? '#handle#' : 'light'
     var offset_#uid# = ('#offset#' !='#'+'offset#' && '#offset#' != '' && '#offset#' > 1) ? parseFloat('#offset#') : false
     var image_#uid# = ('#image#' !='#'+'image#') ? '#image#' : 'bay_white';
@@ -71,13 +65,14 @@
     }
     
     /* ------------ General -------------- */
-    if (is_numeric('#widthShutter#')) document.documentElement.style.setProperty('--shutter-width-#uid#', parseFloat('#widthShutter#') + 'px')
-    if (is_numeric('#heightShutter#')) document.documentElement.style.setProperty('--shutter-height-#uid#', parseFloat('#heightShutter#') + 'px')
+    if (is_numeric('#width#')) document.documentElement.style.setProperty('--shutter-width-#uid#', parseFloat('#width#') + 'px')
+    if (is_numeric('#height#')) document.documentElement.style.setProperty('--shutter-height-#uid#', parseFloat('#height#') + 'px')
     document.documentElement.style.setProperty('--shutter-handle-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/selecteur_' + colorHandle_#uid# + '.png)')
     document.documentElement.style.setProperty('--shutter-image-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/' + image_#uid# + '.png)')
+    if ('#position#' == '0' || '#position#' == 'off') document.querySelector('.sliderValue-#uid#')?.unseen()
     
     if (image_#uid# == "velux") {
-      document.documentElement.style.setProperty('--padding-top-#uid#', '15px') //parseFloat('#widthShutter#')
+      document.documentElement.style.setProperty('--padding-top-#uid#', '15px') //parseFloat('#width#')
       document.documentElement.style.setProperty('--padding-bottom-#uid#', '12px')
       document.documentElement.style.setProperty('--handle-radius-#uid#', '1px')
     } else if (image_#uid# == "window"|| image_#uid# == "window2" || image_#uid# == "window3") {
@@ -103,7 +98,7 @@
     if (is_numeric('#paramRadius#')) document.documentElement.style.setProperty('--handle-radius-#uid#', parseFloat('#paramRadius#') + 'px')
     
     /* ----------- direction ----------- */
-    if (direction_#uid# == true) createOptions_#uid#.direction = 'rtl'
+    if (invert_#uid# == true) createOptions_#uid#.direction = 'rtl'
     
     /* ----------- init noUiSlider ----------- */
     noUiSlider.create(slider_#uid#, createOptions_#uid#);
@@ -115,53 +110,53 @@
     
     slider_#uid#.noUiSlider.on('update', function(values, handle) {
       let value = values[0].replace('#unite#','').replace(' ','')
-      let container = document.getElementById('container-#uid#')
-      let position = value;
-      document.documentElement.style.setProperty('--shutter-backgroundHeight-#uid#', ((direction_#uid# == true) ? parseInt(maxValue_#uid#) - value + '%' : value + '%'))
-      if (direction_#uid# == true) {
-        if (offset_#uid# != false) {
-          if (value < 1) {
-            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
-          } else {
-            if (value >= 1  && value <= offset_#uid#) {
-              container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
-            } else if (value >= maxValue_#uid#) {
-              container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+      document.documentElement.style.setProperty('--shutter-backgroundHeight-#uid#', ((invert_#uid# == true) ? parseInt(maxValue_#uid#) - value + '%' : value + '%'))
+      if (is_object(cmd = document.querySelector('.cmd[data-cmd_uid="#uid#"]'))) {
+        if (invert_#uid# == true) {
+          if (offset_#uid# != false) {
+            if (value < 1) {
+              cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
             } else {
-              container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+              if (value >= 1  && value <= offset_#uid#) {
+                cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
+              } else if (value >= maxValue_#uid#) {
+                cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+              } else {
+                cmd.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+              }
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
             }
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+          } else {
+            if (value < 1) {
+              cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+            } else {
+              if (value >= maxValue_#uid#) cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+              else cmd.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+            }
           }
         } else {
-          if (value < 1) {
-            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+          if (offset_#uid# != false) {
+            if (value >= maxValue_#uid#) {
+              cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+            } else {
+              if (value < maxValue_#uid#  && value >= (maxValue_#uid# - offset_#uid#)) cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
+              else if (value < 1) cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+              else cmd.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+            }
           } else {
-            if (value >= maxValue_#uid#) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
-          }
-        }
-      } else {
-        if (offset_#uid# != false) {
-          if (value >= maxValue_#uid#) {
-            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
-          } else {
-            if (value < maxValue_#uid#  && value >= (maxValue_#uid# - offset_#uid#)) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ajouré'
-            else if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
-          }
-        } else {
-          if (value >= maxValue_#uid#) {
-            container.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
-          } else {
-            if (value < 1) container.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
-            else container.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
-            document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+            if (value >= maxValue_#uid#) {
+              cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Fermé'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lamepleine_' + colorBlades_#uid# + '.png)')
+            } else {
+              if (value < 1) cmd.querySelector('.sliderValue-#uid#').innerHTML = 'Ouvert'
+              else cmd.querySelector('.sliderValue-#uid#').innerHTML = value + ' #unite#'
+              document.documentElement.style.setProperty('--shutter-lames-#uid#', 'url(data/customTemplates/dashboard/cmd.action.slider.shutter1/lame_' + colorBlades_#uid# + '.png)')
+            }
           }
         }
       }
@@ -169,6 +164,9 @@
     
     jeedom.cmd.addUpdateFunction('#id#', function(_options) {
       if (is_object(cmd = document.querySelector('.cmd[data-cmd_uid="#uid#"]'))) {
+        if ('#time#' == 'duration' || '#time#' == 'date') {
+          jeedom.cmd.displayDuration(_options.valueDate, cmd.querySelector('.timeCmd'), '#time#')
+        }
         if (_options.value != undefined && slider_#uid#.noUiSlider) {
           if (slider_#uid#.noUiSlider) slider_#uid#.noUiSlider.set(_options.value)
         }
@@ -197,18 +195,22 @@
     .cmd.cmd-widget[data-cmd_uid=#uid#] {
       user-select: none;
     }
-    #slider-#uid#.noUi-vertical {
+    #shutterSlider-#uid# {
+      padding: var(--padding-top-#uid#) 0px var(--padding-bottom-#uid#) 0px;
+    }
+    #shutterSlider-#uid#.noUi-vertical {
       height: var(--shutter-height-#uid#);
-      width: var(--shutter-width-#uid#) !important;
-      background: var(--shutter-image-#uid#) no-repeat !important;
-      background-position: bottom center !important;
-      background-size: var(--shutter-width-#uid#) var(--shutter-height-#uid#) !important;
+      width: var(--shutter-width-#uid#);
+      background: var(--shutter-image-#uid#) no-repeat;
+      background-position: bottom center;
+      background-size: var(--shutter-width-#uid#) var(--shutter-height-#uid#);
+      border-radius: 0px;
     }
-    #slider-#uid# .noUi-connects {
-      background: transparent;
-      border-radius: 3px 3px 0px 0px;
+    #shutterSlider-#uid# .noUi-connects {
+      /* background: transparent; */
+      /* border-radius: 3px 3px 0px 0px; */
     }
-    #slider-#uid# .noUi-handle {
+    #shutterSlider-#uid# .noUi-handle {
       width: calc(var(--shutter-width-#uid#) - var(--padding-horizontal-#uid#));
       height: 9px;
       background: var(--shutter-handle-#uid#) center !important;
@@ -217,39 +219,28 @@
       bottom: -9px;
       right: calc(var(--padding-horizontal-#uid#) / 2);
     }
-    #slider-#uid#.noUi-target {
-      border: 0;
-    }
-    #slider-#uid# .noUi-connect {
+
+    #shutterSlider-#uid# .noUi-connect {
       width: calc(var(--shutter-width-#uid#) - var(--padding-horizontal-#uid#));
       left: calc(var(--padding-horizontal-#uid#) / 2);
-      /* top: 11px; */
       height: var(--shutter-backgroundHeight-#uid#);
       transform: unset !important;
-      background-color: unset !important;
-      background-image: unset !important;
-      background: var(--shutter-lames-#uid#) center !important;
-       background-size: var(--shutter-width-#uid#) var(--shutter-lames-height-#uid#) !important;
-      /* left: unset; */
+      background: var(--shutter-lames-#uid#) center;
+       background-size: var(--shutter-width-#uid#) var(--shutter-lames-height-#uid#);
     }
-    #slider-#uid# .noUi-handle::before,
-    #slider-#uid# .noUi-handle::after {
+    #shutterSlider-#uid# .noUi-handle::before,
+    #shutterSlider-#uid# .noUi-handle::after {
       display: none;
     }
-    #slider-#uid# {
-      padding: var(--padding-top-#uid#) 0px var(--padding-bottom-#uid#) 0px;
-    }
-    #slider-#uid#.noUi-target,
-    #slider-#uid# .noUi-handle {
+
+    #shutterSlider-#uid#.noUi-target,
+    #shutterSlider-#uid# .noUi-handle {
       border: 0;
       box-shadow: none;
     }
-    #slider-#uid# .noUi-connects,
-    #slider-#uid# .noUi-handle {
+    #shutterSlider-#uid# .noUi-connects,
+    #shutterSlider-#uid# .noUi-handle {
       cursor: pointer;
-    }
-    .container-#uid# .vertical {
-      padding: 15px 30px 0px 30px;
     }
     .sliderValue-#uid# {
       font-weight: bold;
